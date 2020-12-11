@@ -42,7 +42,7 @@ body {
     border: 2px solid #ccc;
     border-radius: 3px;
     padding: 2px;
-
+    box-sizing: border-box;
 }
 
 #submit {
@@ -54,5 +54,61 @@ body {
     color: #FEFCFF;
     font-weight: bold;
     text-transform: capitalize;
+    cursor: pointer;
+}
+
+.datepicker-calendar {
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(0,0,0, 0.26);
+    border-radius: 3px;
+}
+
+.datepicker-calendar--header,
+.datepicker-calendar--body {
+    padding: 6px;
+}
+
+.datepicker-calendar--header {
+    background-color: #82CAFA;
+}
+
+button.month-change {
+    padding: 2px 5px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.datepicker-calendar--header select {
+    background-color: transparent;
+    padding: 2px 5px;
+    border: none;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+.datepicker-calendar--header__dates {
+    display: flex;
+    margin: 0 auto;
+}
+
+.datepicker-calendar--body {
+    background-color: #FEFCFF;
+}
+
+.day-unit {
+    display: inline-block;
+    width: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+}
+
+.day-unit a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
