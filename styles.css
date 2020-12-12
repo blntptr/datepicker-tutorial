@@ -57,6 +57,11 @@ body {
     cursor: pointer;
 }
 
+.datepicker {
+    display: none;
+    position: absolute;
+}
+
 .datepicker-calendar {
     display: inline-block;
     box-shadow: 0 2px 8px rgba(0,0,0, 0.26);
@@ -110,5 +115,9 @@ button.month-change {
     width: 100%;
     height: 100%;
     text-decoration: none;
+}
+
+.u-div-show {
+    display: block!important;
 }
 
