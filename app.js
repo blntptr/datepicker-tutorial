@@ -28,11 +28,12 @@ datepickerInputs.forEach(datepickerInput => {
             const datepicker = new DatePicker({
                 id: ID,
                 startDate: "2018-11-30",
-                endDate: "2021-03-31"
+                endDate: "2021-03-31",
+                defaultYearAndMonth: "2018-11"
             });
             activatedDatepickers.push(datepicker);
             datepicker.addHTML();
-            // console.log(datepicker);
+            console.log(datepicker);
     
             datepicker.datepickerDiv.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -41,7 +42,7 @@ datepickerInputs.forEach(datepickerInput => {
             active.datepickerDiv.classList.add('u-div-show');
         }
 
-        console.log(activatedDatepickers);
+        // console.log(activatedDatepickers);
         
     });
 
