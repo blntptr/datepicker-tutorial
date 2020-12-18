@@ -77,9 +77,38 @@ class DatePicker {
         this.datepickerDiv = document.getElementById(`datepicker-${this.uid}`);
 
         this.setHeaderYearAndMonthRange();
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        document.querySelector(`#datepicker-${this.uid} .pick-year-select`).addEventListener('change', (event) => {
+            this.currentYearAndMonth = event.target.value + this.currentYearAndMonth.substr(4,3);
+            this.setHeaderYearAndMonthRange();
+        });
+
+        document.querySelector(`#datepicker-${this.uid} .pick-month-select`).addEventListener('change', (event) => {
+            this.currentYearAndMonth = this.currentYearAndMonth.substr(0,5) + event.target.value;
+            this.renderDays();
+        });
+
+        //month-change go-to-next-month
+        document.querySelector(`#datepicker-${this.uid} .go-to-previous-month`).addEventListener('click', (event) => {
+            event.preventDefault();
+            this.changeMonth(-12);
+        });
+
+        document.querySelector(`#datepicker-${this.uid} .go-to-next-month`).addEventListener('click', (event) => {
+            event.preventDefault();
+            this.changeMonth(12);
+        });
+
+        
     }
 
     setHeaderYearAndMonthRange() {
+
+        document.querySelector(`#datepicker-${this.uid} .pick-year-select`).innerHTML = '';
+        document.querySelector(`#datepicker-${this.uid} .pick-month-select`).innerHTML = '';
     
         const startYear = +this.startDate.substr(0,4);
         const endYear = +this.endDate.substr(0,4);
@@ -100,18 +129,23 @@ class DatePicker {
             if(+iterationDate.format('YYYY') === currentYear) {
                 const option = createOptionElement(iterationDate.format('MM'),iterationDate.format('MMMM'),`#datepicker-${this.uid} .pick-month-select`);
 
-                console.log(iterationDateYYYYMM);
+                // console.log(iterationDateYYYYMM);
             }
             
 
             iterationDate = iterationDate.add(1, 'months');
             iterationDateYYYYMM = iterationDate.format('YYYY-MM');
-
-            document.querySelector(`#datepicker-${this.uid} .pick-year-select`).value = currentYear;
-            document.querySelector(`#datepicker-${this.uid} .pick-month-select`).value = this.currentYearAndMonth.substr(5,2);
-            
-            
+             
         }
+
+        if(this.startDate.substr(0,7) > this.currentYearAndMonth) {
+            this.currentYearAndMonth = this.startDate.substr(0,7);
+        }else if(this.endDate.substr(0,7) < this.currentYearAndMonth) {
+            this.currentYearAndMonth = this.endDate.substr(0,7);   
+        }
+
+        document.querySelector(`#datepicker-${this.uid} .pick-year-select`).value = currentYear;
+        document.querySelector(`#datepicker-${this.uid} .pick-month-select`).value = this.currentYearAndMonth.substr(5,2);
 
         
         this.renderDays();
@@ -119,6 +153,9 @@ class DatePicker {
     }
 
     renderDays() {
+
+        document.querySelector(`#datepicker-${this.uid} .datepicker-calendar--body`).innerHTML = '';
+
         const monthArray = [];
         const firstDayOfMonth = this.firstWeekDayOfTheMonth();
 
@@ -141,7 +178,7 @@ class DatePicker {
             }
         }
 
-        console.log(monthArray);
+        // console.log(monthArray);
 
         monthArray.forEach((day,index) => {
             if(index % 7 === 0) {
@@ -158,6 +195,17 @@ class DatePicker {
             calendarRows[calendarRowsCount-1].insertAdjacentHTML('beforeend', newDay);
 
         });
+    }
+
+    changeMonth(value) {
+        const newDate = moment(new Date(this.currentYearAndMonth)).add(value, 'months').format('YYYY-MM');
+
+        if(this.startDate.substr(0,7) <= newDate &&
+        this.endDate.substr(0,7) >= newDate) {
+            this.currentYearAndMonth = newDate;
+            this.setHeaderYearAndMonthRange();
+        }
+        
     }
 
     firstWeekDayOfTheMonth() {
