@@ -1,3 +1,5 @@
+import { createOptionElement } from "./utility-functions.js";
+
 class DatePicker {
     constructor(obj) {
         this.uid = obj.id;
@@ -47,7 +49,7 @@ class DatePicker {
                 </div>
 
                 <div class="datepicker-calendar--body">
-                    <div class="datepicker-calendar--body__days-row">
+                    <!--<div class="datepicker-calendar--body__days-row">
                         <div class="day-unit"><a href="#">1</a></div>
                         <div class="day-unit"><a href="#">2</a></div>
                         <div class="day-unit"><a href="#">3</a></div>
@@ -64,7 +66,7 @@ class DatePicker {
                         <div class="day-unit"><a href="#">12</a></div>
                         <div class="day-unit"><a href="#">13</a></div>
                         <div class="day-unit"><a href="#">14</a></div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -84,10 +86,7 @@ class DatePicker {
         const currentYear = +this.currentYearAndMonth.substr(0,4);
 
         for(let i=startYear; i<=endYear; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.text = i;
-            document.querySelector(`#datepicker-${this.uid} .pick-year-select`).appendChild(option);
+            const option = createOptionElement(i,i,`#datepicker-${this.uid} .pick-year-select`);
         }
 
         // console.log(moment(new Date(this.startDate)).format('YY-MMMM-DD'));
@@ -99,10 +98,7 @@ class DatePicker {
 
         while(iterationDateYYYYMM <= endDateYYYYMM) {
             if(+iterationDate.format('YYYY') === currentYear) {
-                const option = document.createElement('option');
-                option.value = iterationDate.format('MM');
-                option.text = iterationDate.format('MMMM');
-                document.querySelector(`#datepicker-${this.uid} .pick-month-select`).appendChild(option);
+                const option = createOptionElement(iterationDate.format('MM'),iterationDate.format('MMMM'),`#datepicker-${this.uid} .pick-month-select`);
 
                 console.log(iterationDateYYYYMM);
             }
@@ -118,8 +114,58 @@ class DatePicker {
         }
 
         
+        this.renderDays();
 
+    }
 
+    renderDays() {
+        const monthArray = [];
+        const firstDayOfMonth = this.firstWeekDayOfTheMonth();
+
+        for(let i=1; i<firstDayOfMonth; i++) {
+            monthArray.push('');
+        }
+
+        const daysInMonth = this.daysInCurrentMonth();
+
+        for(let i=1; i<=daysInMonth; i++) {
+            monthArray.push(i);
+        }
+
+        if(monthArray.length % 7 !== 0) {
+
+            const trailingEmptySlots = 7 - monthArray.length % 7;
+
+            for(let i=1; i<=trailingEmptySlots; i++) {
+                monthArray.push('');
+            }
+        }
+
+        console.log(monthArray);
+
+        monthArray.forEach((day,index) => {
+            if(index % 7 === 0) {
+                const newRow = '<div class="datepicker-calendar--body__days-row"></div>';
+
+                document.querySelector(`#datepicker-${this.uid} .datepicker-calendar--body`).insertAdjacentHTML('beforeend', newRow);
+            }
+
+            const calendarRows = document.querySelectorAll(`#datepicker-${this.uid} .datepicker-calendar--body__days-row`);
+            const calendarRowsCount = calendarRows.length;
+
+            const newDay = `<div class="day-unit">${day}</div>`
+
+            calendarRows[calendarRowsCount-1].insertAdjacentHTML('beforeend', newDay);
+
+        });
+    }
+
+    firstWeekDayOfTheMonth() {
+        return moment(new Date(this.currentYearAndMonth)).isoWeekday();
+    }
+
+    daysInCurrentMonth() {
+        return moment(new Date(this.currentYearAndMonth)).daysInMonth();
     }
 }
 

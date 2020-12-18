@@ -103,6 +103,12 @@ button.month-change {
     background-color: #FEFCFF;
 }
 
+.datepicker-calendar--body__days-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+
 .day-unit {
     display: inline-block;
     width: 2.5rem;
