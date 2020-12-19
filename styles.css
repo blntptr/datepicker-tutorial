@@ -123,6 +123,13 @@ button.month-change {
     text-decoration: none;
 }
 
+.selected-day {
+    background-color: #82CAFA;
+    border-radius: 2.5rem;
+    color: #FEFCFF;
+    font-weight: bold;
+}
+
 .u-div-show {
     display: block!important;
 }

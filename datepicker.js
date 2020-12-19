@@ -5,6 +5,8 @@ class DatePicker {
         this.uid = obj.id;
         this.startDate = obj.startDate;
         this.endDate = obj.endDate;
+        this.selectedDate=null;
+
         this.defaultYearAndMonth = obj.defaultYearAndMonth;
         this.currentYearAndMonth = obj.defaultYearAndMonth;
 
@@ -94,12 +96,12 @@ class DatePicker {
         //month-change go-to-next-month
         document.querySelector(`#datepicker-${this.uid} .go-to-previous-month`).addEventListener('click', (event) => {
             event.preventDefault();
-            this.changeMonth(-12);
+            this.changeMonth(-1);
         });
 
         document.querySelector(`#datepicker-${this.uid} .go-to-next-month`).addEventListener('click', (event) => {
             event.preventDefault();
-            this.changeMonth(12);
+            this.changeMonth(1);
         });
 
         
@@ -115,7 +117,7 @@ class DatePicker {
         const currentYear = +this.currentYearAndMonth.substr(0,4);
 
         for(let i=startYear; i<=endYear; i++) {
-            const option = createOptionElement(i,i,`#datepicker-${this.uid} .pick-year-select`);
+            createOptionElement(i,i,`#datepicker-${this.uid} .pick-year-select`);
         }
 
         // console.log(moment(new Date(this.startDate)).format('YY-MMMM-DD'));
@@ -127,7 +129,7 @@ class DatePicker {
 
         while(iterationDateYYYYMM <= endDateYYYYMM) {
             if(+iterationDate.format('YYYY') === currentYear) {
-                const option = createOptionElement(iterationDate.format('MM'),iterationDate.format('MMMM'),`#datepicker-${this.uid} .pick-month-select`);
+                createOptionElement(iterationDate.format('MM'),iterationDate.format('MMMM'),`#datepicker-${this.uid} .pick-month-select`);
 
                 // console.log(iterationDateYYYYMM);
             }
@@ -190,11 +192,44 @@ class DatePicker {
             const calendarRows = document.querySelectorAll(`#datepicker-${this.uid} .datepicker-calendar--body__days-row`);
             const calendarRowsCount = calendarRows.length;
 
-            const newDay = `<div class="day-unit">${day}</div>`
+            let entry ='';
+            if(day) {
+                const dateValue = `${this.currentYearAndMonth}-${day < 10 ? '0'+day : day}`;
+
+                entry = `<a href="javascript:void(0)" data-value="${dateValue}">${day}</a>`;
+            }
+
+            const newDay = `<div class="day-unit">${entry}</div>`;
 
             calendarRows[calendarRowsCount-1].insertAdjacentHTML('beforeend', newDay);
 
         });
+
+        const monthDayLinks = document.querySelectorAll(`#datepicker-${this.uid} .day-unit a`);
+
+        for(const dayLink of monthDayLinks) {
+            dayLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                const date = event.target.getAttribute('data-value');
+                this.selectedDate = this.inputElement.value = date;
+    
+                this.highlightSelectedDay();
+                
+            });
+        }
+
+        if(this.selectedDate)
+            this.highlightSelectedDay();
+    }
+
+    highlightSelectedDay() {
+        const currentHighlight = document.querySelector(`#datepicker-${this.uid} .selected-day`);
+
+        if(currentHighlight)
+            currentHighlight.classList.remove('selected-day');
+
+        if(this.selectedDate.substr(0,7) === this.currentYearAndMonth)
+            document.querySelector(`#datepicker-${this.uid} .day-unit a[data-value='${this.selectedDate}']`).classList.add('selected-day');
     }
 
     changeMonth(value) {
