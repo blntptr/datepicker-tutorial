@@ -116,6 +116,10 @@ button.month-change {
     text-align: center;
 }
 
+.datepicker-calendar--body .day-unit {
+    color: #ccc;
+}
+
 .day-unit a {
     display: inline-block;
     width: 100%;

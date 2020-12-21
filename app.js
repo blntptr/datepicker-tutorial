@@ -1,5 +1,8 @@
 import DatePicker from "./datepicker.js";
 
+let newStartDate;
+let newEndDate;
+
 const closeDatepickers = () => {
     activatedDatepickers.forEach(active => {
         if(active.datepickerDiv.className.indexOf('u-div-show') > -1)
@@ -27,9 +30,9 @@ datepickerInputs.forEach(datepickerInput => {
         if(!active) {
             const datepicker = new DatePicker({
                 id: ID,
-                startDate: "2018-11-30",
-                endDate: "2021-03-31",
-                defaultYearAndMonth: "2021-03"
+                startDate: newStartDate || "2018-11-15",
+                endDate: newEndDate || "2021-03-15",
+                defaultYearAndMonth: "2020-12"
             });
             activatedDatepickers.push(datepicker);
             datepicker.addHTML();
@@ -53,5 +56,27 @@ datepickerInputs.forEach(datepickerInput => {
 
 document.querySelector('.container').addEventListener('click', () => {
     closeDatepickers();
+});
+
+document.querySelector('#from').addEventListener('date-selected', (event) => {
+    const active = activatedDatepickers.find(activated => activated.uid === "to");
+
+    if(!active) {
+        newStartDate = event.detail;
+    }else{
+        active.resetStartDate(event.detail);
+    }
+    
+});
+
+document.querySelector('#to').addEventListener('date-selected', (event) => {
+    const active = activatedDatepickers.find(activated => activated.uid === "from");
+
+    if(!active) {
+        newEndDate = event.detail;
+    }else{
+        active.resetEndDate(event.detail);
+    }
+    
 });
 

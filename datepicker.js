@@ -10,6 +10,10 @@ class DatePicker {
         this.defaultYearAndMonth = obj.defaultYearAndMonth;
         this.currentYearAndMonth = obj.defaultYearAndMonth;
 
+        if(this.startDate.substr(0,7) > this.defaultYearAndMonth ||
+        this.endDate.substr(0,7) < this.defaultYearAndMonth)
+            this.currentYearAndMonth = this.startDate.substr(0,7);
+
         this.inputElement = document.getElementById(this.uid);
         this.datepickerDiv = null;
     }
@@ -192,10 +196,11 @@ class DatePicker {
             const calendarRows = document.querySelectorAll(`#datepicker-${this.uid} .datepicker-calendar--body__days-row`);
             const calendarRowsCount = calendarRows.length;
 
-            let entry ='';
-            if(day) {
-                const dateValue = `${this.currentYearAndMonth}-${day < 10 ? '0'+day : day}`;
+            let entry = day;
 
+            const dateValue = `${this.currentYearAndMonth}-${day < 10 ? '0'+day : day}`;
+
+            if(this.startDate <= dateValue && this.endDate >= dateValue) {
                 entry = `<a href="javascript:void(0)" data-value="${dateValue}">${day}</a>`;
             }
 
@@ -214,12 +219,26 @@ class DatePicker {
                 this.selectedDate = this.inputElement.value = date;
     
                 this.highlightSelectedDay();
+
+                this.emitDateSelected();
+
+                setTimeout(() => {
+                    // const closeClick = new Event('click');
+                    // document.querySelector('.container').dispatchEvent(closeClick);
+                    this.datepickerDiv.classList.remove('u-div-show');
+                },150);
+                
                 
             });
         }
 
         if(this.selectedDate)
             this.highlightSelectedDay();
+    }
+
+    emitDateSelected() {
+        const dateSelected = new CustomEvent('date-selected', { detail: this.selectedDate });
+        this.inputElement.dispatchEvent(dateSelected);
     }
 
     highlightSelectedDay() {
@@ -241,6 +260,18 @@ class DatePicker {
             this.setHeaderYearAndMonthRange();
         }
         
+    }
+
+    resetStartDate(date) {
+        this.startDate = date;
+        this.currentYearAndMonth = date.substr(0,7);
+        this.setHeaderYearAndMonthRange();
+    }
+
+    resetEndDate(date) {
+        this.endDate = date;
+        this.currentYearAndMonth = date.substr(0,7);
+        this.setHeaderYearAndMonthRange();
     }
 
     firstWeekDayOfTheMonth() {
